@@ -1,0 +1,20 @@
+{
+  "name": "fatchip-gmbh/plugin-oxid-yellowmap",
+  "type": "oxideshop-module",
+  "keywords": [
+    "oxid", "yellowmap", "adress", "autocomplete"
+  ],
+  "homepage": "https://www.fatchip.de",
+  "autoload": {
+    "psr-4": {
+      "FC\\YellowMap\\": ""
+    }
+  },
+  "extra": {
+    "oxideshop": {
+      "target-directory": "fc/fcyellowmapac"
+    }
+  },
+  "require": {
+  }
+}

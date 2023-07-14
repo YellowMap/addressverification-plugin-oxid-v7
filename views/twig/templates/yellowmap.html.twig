@@ -1,0 +1,286 @@
+<style>
+    @supports (--css: variables) {
+        :root {
+            --smartmaps-text-color: #000;
+            --smartmaps-input-bg-color: #eff1f2;
+            --smartmaps-border: none;
+            --smartmaps-boxshadow: none;
+            --smartmaps-border-radius: 0px;
+            --smartmaps-font-size: inherit;
+        }
+    }
+    .sm-autocomplete{
+        display: block;
+    }
+    .sm-autocomplete svg{
+        left: calc(100% - 20px);
+    }
+    .sm-autocomplete [type=text]{
+        background-color: #eff1f2;
+    }
+    .sm-autocomplete + label  {
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        padding:1rem .75rem;
+        overflow:hidden;
+        text-align:start;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        pointer-events:none;
+        border:1px solid transparent;
+        transform-origin:0 0;
+        transition:opacity .1s ease-in-out,transform .1s ease-in-out;
+        opacity:.65;
+        transform:scale(.85) translateY(-.5rem) translateX(.15rem)
+     }
+
+    .sm-autocomplete .form-control{
+        height:calc(3.5rem + 2px);
+        line-height:1.25
+    }
+    .sm-autocomplete .form-control{
+        padding:1rem .75rem
+    }
+    .sm-autocomplete .form-control::placeholder{
+        color:transparent
+    }
+    .sm-autocomplete .form-control:focus,
+    .sm-autocomplete .form-control:not(:placeholder-shown){
+        padding-top:1.625rem;
+        padding-bottom:.625rem
+    }
+    .sm-autocomplete .form-control:-webkit-autofill{
+        padding-top:1.625rem;
+        padding-bottom:.625rem
+    }
+
+    /*
+        FIXME New autocomplete DOM structure disconnects field from label
+        The CSS pseudo class :has() could help but not supported in Firefox at the moment
+    */
+    .sm-autocomplete .form-control:focus~label,
+    .sm-autocomplete .form-control:not(:placeholder-shown)~label{
+        opacity:.65;
+        transform:scale(.85) translateY(-.5rem) translateX(.15rem)
+    }
+    .sm-autocomplete .form-control:-webkit-autofill~label{
+        opacity:.65;
+        transform:scale(.85) translateY(-.5rem) translateX(.15rem)
+    }
+
+    .fc_yellowmap_validation_button {
+        margin-left: 10px;
+    }
+
+</style>
+
+{% set aCountryList = oViewConf.getCountryList() %}
+{% set sActiveThemeId = oViewConf.getActiveTheme()|lower %}
+
+{{ script({ include: oViewConf.getModuleUrl('fcyellowmapac', 'js/fc_fcyellowmap.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+
+<script src="{{ oViewConf.fcGetYMFullLibraryUrl() }}"></script>
+
+<script>
+    var iso2Id = {};
+    var id2Iso = {};
+    var allowedIso = [];
+
+    {% for sCountryId, oCountry in aCountryList %}
+        id2Iso["{{ sCountryId }}"] = "{{ oCountry.oxcountry__oxisoalpha2.value }}";
+        iso2Id["{{ oCountry.oxcountry__oxisoalpha2.value }}"] = "{{ sCountryId }}";
+        {% if sCountryId in aHomeCountry %}
+            allowedIso.push("{{ oCountry.oxcountry__oxisoalpha2.value|lower }}");
+        {% endif %}
+    {% endfor %}
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        initCountriesLists(id2Iso, iso2Id, allowedIso);
+
+        ym.ready({ autocomplete: 5 }, function (modules) {
+            var oFcTargetElem = document.getElementsByName(oFcFieldMappingInv.street);
+            if (oFcTargetElem.length > 0) {
+                fcInitAutocompleteField(modules, 'input[name="' + oFcFieldMappingInv.street + '"]', oFcFieldMappingInv);
+            }
+            oFcTargetElem = document.getElementsByName(oFcFieldMappingDel.street);
+            if (oFcTargetElem.length > 0) {
+                fcInitAutocompleteField(modules, 'input[name="' + oFcFieldMappingDel.street + '"]', oFcFieldMappingDel);
+            }
+        });
+    });
+
+    function fcInitAutocompleteField(modules, sTargetSelector, oFieldMapping) {
+        var oAutoCompleteField = modules.autoComplete(sTargetSelector, {
+            isoCountries: fcFetchIsoCountries(oFieldMapping),
+            includeFilters: {
+            },
+            dataType: 'json',
+            onSelected: function (geojson, address, query) {
+                fcFillAddress(address, oFieldMapping);
+            },
+            onReady: function () {
+                var isFirefox = typeof InstallTrigger !== "undefined";
+                if (!isFirefox) {
+                    this.element.autocomplete = "disabled";
+                }
+            }
+        });
+
+        var oCountrySelector = document.getElementsByName(oFieldMapping.country);
+        if (oCountrySelector.length > 0) {
+            oCountrySelector = oCountrySelector[0];
+            oCountrySelector.onchange = function() {
+                oAutoCompleteField.options.isoCountries = fcFetchIsoCountries(oFieldMapping);
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var aFcAddressesList = {
+        'inv': {
+            'validated': '',
+            'suggested': null,
+            'selected' : ''
+        },
+        'del': {
+            'validated': '',
+            'suggested': null,
+            'selected' : ''
+        }
+    };
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var blFcMessageBoxesCreated = fcAppendMessageBoxes();
+
+        if (blFcMessageBoxesCreated) {
+            var blFcAddressCheckStep = '';
+
+            ym.ready(function(modules) {
+                var oSubmitButton = fcDetectSubmitButton();
+
+                oSubmitButton.onclick = function (evt) {
+                    fcHideAllBoxes();
+
+                    var oSelectedInvAddress = fcGetSelectedAddress(oFcFieldMappingInv);
+                    aFcAddressesList.inv.selected = fcGetAddressString(oSelectedInvAddress);
+
+                    var oSelectedDelAddress = fcGetSelectedAddress(oFcFieldMappingDel)
+                    aFcAddressesList.del.selected = fcGetAddressString(oSelectedDelAddress);
+
+                    if ((fcIsCheckNeeded('inv') && aFcAddressesList.inv.selected !== aFcAddressesList.inv.validated)
+                        || (fcIsCheckNeeded('del') && aFcAddressesList.del.selected !== aFcAddressesList.del.validated))
+                    {
+                        evt.preventDefault();
+
+                        blFcAddressCheckStep = 'inv';
+                        if (fcIsCheckNeeded(blFcAddressCheckStep) && aFcAddressesList.inv.selected !== aFcAddressesList.inv.validated) {
+                            modules.geocode(oSelectedInvAddress);
+                        } else {
+                            blFcAddressCheckStep = 'del';
+                            if (fcIsCheckNeeded(blFcAddressCheckStep) && aFcAddressesList.del.selected !== aFcAddressesList.del.validated)
+                            {
+                                modules.geocode(oSelectedDelAddress);
+                            }
+                        }
+                    }
+                };
+
+                ym.services.geoCoder.on('success', function(req, res) {
+                    if (res.body && res.body.features && res.body.features.length) {
+                        var oFeature = res.body.features[0];
+
+                        var sSelectedAddressString = aFcAddressesList[blFcAddressCheckStep].selected
+
+                        var oSuggestedAddress = {
+                            country: oFeature.properties.isoCountry,
+                            state: oFeature.properties.district,
+                            zip: oFeature.properties.zip,
+                            city: oFeature.properties.city,
+                            street: oFeature.properties.street,
+                            houseNo: oFeature.properties.houseNo
+                        };
+                        var sSuggestedAddressString = fcGetAddressString(oSuggestedAddress);
+
+                        if (sSelectedAddressString.toLowerCase() !== sSuggestedAddressString.toLowerCase()) {
+                            fcShowSuggestionBox(sSuggestedAddressString, blFcAddressCheckStep);
+                            aFcAddressesList[blFcAddressCheckStep].suggested = oSuggestedAddress;
+                        } else {
+                            aFcAddressesList[blFcAddressCheckStep].validated = sSelectedAddressString;
+                        }
+
+                        if (blFcAddressCheckStep == 'inv') {
+                            blFcAddressCheckStep = 'del';
+                            var oSelectedDelAddress = fcGetSelectedAddress(oFcFieldMappingDel)
+                            aFcAddressesList.del.selected = fcGetAddressString(oSelectedDelAddress);
+                            if (fcIsCheckNeeded(blFcAddressCheckStep) && aFcAddressesList.del.selected !== aFcAddressesList.del.validated) {
+                                modules.geocode(oSelectedDelAddress);
+                            }
+                        }
+                    } else {
+                        console.log('Address could not be validated.')
+                    }
+                });
+                ym.services.geoCoder.on('error', function(req, res, errorType) {
+                    console.log('ERROR:' + errorType);
+                });
+            });
+        }
+    });
+
+    function fcAcceptSuggestion(sSection) {
+        document.getElementById('fc_yellowmap_validation_' + sSection).style.display = 'none';
+
+        var oFieldMapping = sSection === 'del' ? oFcFieldMappingDel : oFcFieldMappingInv;
+        aFcAddressesList[sSection].validated = fcGetAddressString(aFcAddressesList[sSection].suggested);
+
+        fcFillAddress(aFcAddressesList[sSection].suggested, oFieldMapping);
+    }
+
+    function fcDeclineSuggestion(sSection) {
+        fcShowValidatedBox(sSection);
+
+        var oFieldMapping = sSection === 'del' ? oFcFieldMappingDel : oFcFieldMappingInv;
+        aFcAddressesList[sSection].validated = fcGetAddressString(fcGetSelectedAddress(oFieldMapping));
+    }
+
+    function fcGenerateMessageBoxElements() {
+        var oFcBoxContainer = document.createElement("div");
+        var oFcInvBoxContainer = fcHtmlToElement(
+            '<div id="fc_yellowmap_validation_inv" class="alert alert-info" style="display: none">' +
+            '<p style="display: inline-block">{{ translate({ ident: "INVOICE_ADDRESS_SUGGESTION" }) }}<span id="fc_yellowmap_validation_hint_inv"></span></p>' +
+            '<p class="fc_yellowmap_validation_button button" style="display: inline-block"><input type="button" onclick="fcAcceptSuggestion(\'inv\')" value="{{ translate({ ident: 'YES' }) }}" /></p>' +
+            '<p class="fc_yellowmap_validation_button button" style="display: inline-block"><input type="button" onclick="fcDeclineSuggestion(\'inv\')" value="{{ translate({ ident: 'NO' }) }}" /></p>' +
+            '</div>'
+        );
+
+        var oFcInvOkBoxContainer = fcHtmlToElement(
+            '<div id="fc_yellowmap_validation_ok_inv" class="alert alert-info" style="display: none">' +
+            '<p>{{ translate({ ident: "INVOICE_ADDRESS_CONFIRMED" }) }}</p>' +
+            '</div>'
+        );
+
+        var oFcDelBoxContainer = fcHtmlToElement(
+            '<div id="fc_yellowmap_validation_del" class="alert alert-info" style="display: none">' +
+            '<p style="display: inline-block">{{ translate({ ident: "DELIVERY_ADDRESS_SUGGESTION" }) }}<span id="fc_yellowmap_validation_hint_del"></span></p>' +
+            '<p class="fc_yellowmap_validation_button button" style="display: inline-block"><input type="button" onclick="fcAcceptSuggestion(\'del\')" value="{{ translate({ ident: 'YES' }) }}" /></p>' +
+            '<p class="fc_yellowmap_validation_button button" style="display: inline-block"><input type="button" onclick="fcDeclineSuggestion(\'del\')" value="{{ translate({ ident: 'NO' }) }}" /></p>' +
+            '</div>'
+        );
+
+        var oFcDelOkBoxContainer = fcHtmlToElement(
+            '<div id="fc_yellowmap_validation_ok_del" class="alert alert-info" style="display: none">' +
+            '<p>{{ translate({ ident: "DELIVERY_ADDRESS_CONFIRMED" }) }}</p>' +
+            '</div>'
+        );
+
+        oFcBoxContainer.append(oFcInvBoxContainer);
+        oFcBoxContainer.append(oFcInvOkBoxContainer);
+        oFcBoxContainer.append(oFcDelBoxContainer);
+        oFcBoxContainer.append(oFcDelOkBoxContainer);
+
+        return oFcBoxContainer;
+    }
+</script>
