@@ -5,6 +5,11 @@
     "oxid", "yellowmap", "adress", "autocomplete"
   ],
   "homepage": "https://www.fatchip.de",
+  "authors": [
+        {
+            "name": "Fatchip GmbH",
+        }
+    ],
   "autoload": {
     "psr-4": {
       "FC\\YellowMap\\": ""
