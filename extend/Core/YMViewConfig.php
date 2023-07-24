@@ -11,20 +11,20 @@
  * prosecuted by civil and criminal law.
  */
 
-namespace FC\YellowMap\extend\Core;
+namespace YellowMap\AddressVerification\extend\Core;
 
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 
-class FcViewConfig extends ViewConfig
+class YMViewConfig extends ViewConfig
 {
     public function fcGetYMConfigApiKey()
     {
         $moduleSettingService = ContainerFactory::getInstance()
             ->getContainer()
             ->get(ModuleSettingServiceInterface::class);
-        return $moduleSettingService->getString('sFcYellowmapAcApiKey', 'fcyellowmapac');
+        return $moduleSettingService->getString('sYMAddressVerificationApiKey', 'ymaddressverification');
     }
 
     public function fcGetYMFullLibraryUrl()

@@ -10,41 +10,41 @@ An Oxid eShop plugin to suggest address in forms
    "repositories": [
       {
         "type": "vcs",
-        "url": "https://github.com/FATCHIP-GmbH/plugin-oxid-yellowmap"
+        "url": "https://github.com/YellowMap/addressverification-plugin-oxid-v7"
       }
     ]
   ```
     -  command line
   ```
-  composer config repositories.fatchip-gmbh/plugin-oxid-yellowmap vcs https://github.com/FATCHIP-GmbH/plugin-oxid-yellowmap
+  composer config repositories.yellowmap/addressverification-plugin-oxid-v7 vcs https://github.com/YellowMap/addressverification-plugin-oxid-v7
   ```
 
 - execute the following command in the shop base folder (where the composer.json file is located)
 ```
-composer require fatchip-gmbh/plugin-oxid-yellowmap --update-no-dev
+composer require yellowmap/addressverification-plugin-oxid-v7 --update-no-dev
 ```
 - activate the module after the composer install is finished
 ```
-vendor/bin/oe-console oe:module:activate fcyellowmapac
+vendor/bin/oe-console oe:module:activate ymaddressverification
 ```
 
 ## Manual Installation
-- Copy the content into source/modules of the shop installation
+- Copy the content into a new directory "vendor/yellowmap/ymaddressverification" of the shop installation
 
 - Connect to the webserver with a console, navigate to the shop base folder
 - install oxid module configuration
 ```
-vendor/bin/oe-console oe:module:install-configuration source/modules/fc/fcyellowmapac
+vendor/bin/oe-console oe:module:install vendor/yellowmap/ymaddressverification
 ```
 
-- apply oxid module configuration
+- install module assets
 ```
-vendor/bin/oe-console oe:module:apply-configuration
+vendor/bin/oe-console oe:module:install-assets
 ```
 
 - activate oxid module
 ```
-vendor/bin/oe-console oe:module:activate fcyellowmapac
+vendor/bin/oe-console oe:module:activate ymaddressverification
 ```
 
 ## Configuration

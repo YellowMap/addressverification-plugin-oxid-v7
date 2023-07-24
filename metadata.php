@@ -10,25 +10,25 @@
 $sMetadataVersion = '2.1';
 
 $aModule = [
-    'id' => 'fcyellowmapac',
-    'title' => 'SmartMaps Address Autocomplete & Verification',
+    'id' => 'ymaddressverification',
+    'title' => 'YellowMap Address Autocomplete & Verification',
     'description' => [
-        'de' => 'Integration von SmartMaps Autovervollständigung',
-        'en' => 'Integration of SmartMaps Autocomplete',
+        'de' => 'Integration von YellowMap Autovervollständigung',
+        'en' => 'Integration of YellowMap Autocomplete',
     ],
-    'version' => '1.0.3',
+    'version' => '1.0.0',
     'author' => 'FATCHIP GmbH im Auftrag der YellowMap AG',
     'email' => 'maps@yellowmap.de',
     'url' => 'https://www.smartmaps.net',
     'thumbnail' => 'img/SmartMaps_poweredbyYM.svg',
     'extend' => [
-        \OxidEsales\Eshop\Core\ViewConfig::class => FC\YellowMap\extend\Core\FcViewConfig::class
+        \OxidEsales\Eshop\Core\ViewConfig::class => YellowMap\YMAddressVerification\extend\Core\YMViewConfig::class
     ],
     'controllers' => [],
     'settings'   => [
         [
-            'group' => 'fcyellowmapac_settings',
-            'name' => 'sFcYellowmapAcApiKey',
+            'group' => 'ymaddressverification_settings',
+            'name' => 'sYMAddressVerificationApiKey',
             'type' => 'str',
             'value' => ''
         ]

@@ -8,6 +8,6 @@ $sLangName = 'English';
 
 $aLang = [
     'charset' => 'UTF-8',
-    'SHOP_MODULE_GROUP_fcyellowmapac_settings' => 'SmartMap Settings',
-    'SHOP_MODULE_sFcYellowmapAcApiKey' => 'API Key',
+    'SHOP_MODULE_GROUP_ymaddressverification_settings' => 'SmartMap Settings',
+    'SHOP_MODULE_sYMAddressVerificationApiKey' => 'API Key',
 ];

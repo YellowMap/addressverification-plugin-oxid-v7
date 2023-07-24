@@ -8,6 +8,6 @@ $sLangName = 'Deutsch';
 
 $aLang = [
     'charset' => 'UTF-8', // Supports german language specific chars like: ä, ö. ß, etc.
-    'SHOP_MODULE_GROUP_fcyellowmapac_settings' => 'SmartMap Einstellungen',
-    'SHOP_MODULE_sFcYellowmapAcApiKey' => 'API Schlüssel',
+    'SHOP_MODULE_GROUP_ymaddressverification_settings' => 'SmartMap Einstellungen',
+    'SHOP_MODULE_sYMAddressVerificationApiKey' => 'API Schlüssel',
 ];

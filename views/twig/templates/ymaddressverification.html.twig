@@ -80,7 +80,7 @@
 {% set aCountryList = oViewConf.getCountryList() %}
 {% set sActiveThemeId = oViewConf.getActiveTheme()|lower %}
 
-{{ script({ include: oViewConf.getModuleUrl('fcyellowmapac', 'js/fc_fcyellowmap.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ymaddressverification', 'js/yellowmap_ymaddressverification.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
 <script src="{{ oViewConf.fcGetYMFullLibraryUrl() }}"></script>
 
