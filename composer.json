@@ -7,7 +7,7 @@
   "homepage": "https://www.fatchip.de",
   "authors": [
         {
-            "name": "Fatchip GmbH",
+            "name": "Fatchip GmbH"
         }
     ],
   "autoload": {
