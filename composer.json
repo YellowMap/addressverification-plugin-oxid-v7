@@ -1,10 +1,13 @@
 {
-  "name": "YellowMap/addressverification-plugin-oxid-v7",
+  "name": "yellowmap/addressverification-plugin-oxid-v7",
   "description": "Yellowmap Module for Oxid 7",
   "type": "oxideshop-module",
   "keywords": ["oxid", "yellowmap", "adress", "autocomplete"],
   "homepage": "https://www.smartmaps.net",
-  "version": "1.0.0",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
   "authors": [
         {
             "name": "Fatchip GmbH"
@@ -17,7 +20,7 @@
   },
   "autoload": {
     "psr-4": {
-      "YellowMap\\YMAddressVerification": "./"
+      "YellowMap\\YMAddressVerification\\": "./"
     }
   }
 }
