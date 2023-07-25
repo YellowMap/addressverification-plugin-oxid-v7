@@ -15,7 +15,7 @@
   ],
   "extra": {
     "oxideshop": {
-      "target-directory": "yellowmap/ymaddressverification"
+      "target-directory": "yellowmap/addressverification-plugin-oxid-v7"
     }
   },
   "autoload": {

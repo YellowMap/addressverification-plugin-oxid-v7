@@ -2,24 +2,8 @@
 An Oxid eShop plugin to suggest address in forms
 
 ## Installation via composer
-
-- In the composer.json file add a new repository
-
-    - manual
-  ```
-   "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://github.com/YellowMap/addressverification-plugin-oxid-v7"
-      }
-    ]
-  ```
-    -  command line
-  ```
-  composer config repositories.yellowmap/addressverification-plugin-oxid-v7 vcs https://github.com/YellowMap/addressverification-plugin-oxid-v7
-  ```
-
-- execute the following command in the shop base folder (where the composer.json file is located)
+- Connect to the webserver with a console, navigate to the shop base folder (where the composer.json file is located)
+- execute the following command:
 ```
 composer require yellowmap/addressverification-plugin-oxid-v7 --update-no-dev
 ```
@@ -29,12 +13,21 @@ vendor/bin/oe-console oe:module:activate ymaddressverification
 ```
 
 ## Manual Installation
-- Copy the content into a new directory "vendor/yellowmap/ymaddressverification" of the shop installation
+- Copy the content into a new directory "vendor/yellowmap/addressverification-plugin-oxid-v7" of the shop installation
+
+- Update the shop's main composer.json file (next to source and vendor folders). Add the following block :
+```
+  "autoload": {
+    "psr-4": {
+      "YellowMap\\YMAddressVerification\\": "./vendor/yellowmap/addressverification-plugin-oxid-v7"
+    }
+  }
+```
 
 - Connect to the webserver with a console, navigate to the shop base folder
 - install oxid module configuration
 ```
-vendor/bin/oe-console oe:module:install vendor/yellowmap/ymaddressverification
+vendor/bin/oe-console oe:module:install vendor/yellowmap/addressverification-plugin-oxid-v7
 ```
 
 - install module assets
