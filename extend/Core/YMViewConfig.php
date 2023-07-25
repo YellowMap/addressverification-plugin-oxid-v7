@@ -11,7 +11,7 @@
  * prosecuted by civil and criminal law.
  */
 
-namespace YellowMap\AddressVerification\extend\Core;
+namespace YellowMap\YMAddressVerification\extend\Core;
 
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
