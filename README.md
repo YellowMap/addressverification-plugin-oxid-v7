@@ -5,7 +5,7 @@ An Oxid eShop plugin to suggest address in forms
 - Connect to the webserver with a console, navigate to the shop base folder (where the composer.json file is located)
 - execute the following command:
 ```
-composer require yellowmap/addressverification-plugin-oxid-v7 --update-no-dev
+composer require yellowmap/addressverification-plugin-oxid-v7 
 ```
 - activate the module after the composer install is finished
 ```
@@ -33,6 +33,10 @@ vendor/bin/oe-console oe:module:install vendor/yellowmap/addressverification-plu
 - install module assets
 ```
 vendor/bin/oe-console oe:module:install-assets
+```
+- create autoload file
+```
+composer dump-autoload
 ```
 
 - activate oxid module
