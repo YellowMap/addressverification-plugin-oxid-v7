@@ -16,7 +16,7 @@ $aModule = [
         'de' => 'Integration von YellowMap Autovervollständigung',
         'en' => 'Integration of YellowMap Autocomplete',
     ],
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'author' => 'FATCHIP GmbH im Auftrag der YellowMap AG',
     'email' => 'maps@yellowmap.de',
     'url' => 'https://www.smartmaps.net',
